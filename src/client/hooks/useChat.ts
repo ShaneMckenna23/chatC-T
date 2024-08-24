@@ -1,4 +1,5 @@
 import { useState } from "react";
+import axios from "axios"; // Make sure to install axios if not already done
 
 interface Message {
     id: number;
@@ -9,20 +10,30 @@ interface Message {
 export function useChat() {
     const [messages, setMessages] = useState<Message[]>([]);
     const [input, setInput] = useState("");
-    const id = 0;   
+    const [isLoading, setIsLoading] = useState(false);
+    let id = 0;
 
-    const handleSubmit = (e: Event) => {
-        console.log("submitting", input);
-        messages.push({ id, role: "User", content: input });
-        setTimeout(() => {
-            messages.push({ id, role: "Chip", content: "I'm sorry, I don't understand (WORK IN PROGRESS)" });
-            setMessages([...messages]);
-        }, 1000);
-        setTimeout(() => {
-            messages.push({ id, role: "Terra", content: "Chip never understands anything... " });
-            setMessages([...messages]);
-        }, 3000);
+    const handleSubmit = async (e: Event) => {
+        e.preventDefault();
+        if (!input.trim()) return;
+
+        const userMessage: Message = { id: id++, role: "User", content: input };
+        setMessages(prevMessages => [...prevMessages, userMessage]);
+        setInput("");
+        setIsLoading(true);
+
+        try {
+            const response = await axios.post("/chat", { message: input });
+            console.log("response", response);
+            const botMessage: Message = { id: id++, role: "Chip", content: response.data.message.content };
+            setMessages(prevMessages => [...prevMessages, botMessage]);
+        } catch (error) {
+            const errorMessage: Message = { id: id++, role: "Chip", content: "Sorry, can't talk right now, I'm dancing" };
+            setMessages(prevMessages => [...prevMessages, errorMessage]);
+        } finally {
+            setIsLoading(false);
+        }
     };
         
-    return { messages, isLoading: false, input, setInput, handleSubmit };
+    return { messages, isLoading, input, setInput, handleSubmit };
 }

@@ -14,7 +14,7 @@
     height: 100%;
     padding: 0px 24px 0px 24px;
     background-color: #000;
-    color: #33ff00;
+    color: #FF69B4;
     font-family: "Courier New", Courier, monospace;
     font-size: 1.5rem;
     overflow: hidden;
@@ -84,7 +84,7 @@
   
   .caret {
     display: inline-block;
-    background-color: #33ff00;
+    background-color: #FF69B4;
     width: 10px;
     height: 24px;
     animation: blink 1s infinite;

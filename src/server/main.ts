@@ -1,10 +1,27 @@
+import xhr2 from 'xhr2';
+global.XMLHttpRequest = xhr2;
 import express from "express";
 import ViteExpress from "vite-express";
+import bodyParser from 'body-parser';
+
+import ollama from 'ollama'
+import modelfile from './model.js'
 
 const app = express();
+await ollama.create({ model: 'chip', modelfile: modelfile })
 
-app.get("/hello", (_, res) => {
-  res.send("Hello Vite + React + TypeScript!");
+app.use(bodyParser.json());
+app.use(bodyParser.urlencoded({ extended: true }));
+
+app.post("/chat", async (req, res) => {
+  const { message } = req.body;
+
+  const response = await ollama.chat({
+    model: 'chip',
+    messages: [{ role: 'user', content: message }],
+  })
+  
+  res.json(response);
 });
 
 ViteExpress.listen(app, 3000, () =>

@@ -50,7 +50,7 @@ const TerminalPage = () => {
               <p key={m.id} className={styles.text}>
                 {`${m.role}: `}
                 {m.content}
-                {isLoading && index === messages.length - 1 && m.role !== "user" && <Caret />}
+                {isLoading && index === messages.length - 1 && m.role !== "User" && <Caret />}
               </p>
             ))}
             <p className={styles.text}>
